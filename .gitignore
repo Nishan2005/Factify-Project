@@ -1,0 +1,30 @@
+# React
+react/node_modules/
+
+
+# Node general
+node_modules/
+
+# Python
+venv/
+.venv/
+__pycache__/
+
+# Jupyter
+.ipynb_checkpoints/
+factify_xlmr_model/
+
+# Model files
+*.pt
+*.pth
+*.pkl
+*.h5
+*.vs
+
+# Datasets
+*.csv
+
+# Build folders
+dist/
+build/
+

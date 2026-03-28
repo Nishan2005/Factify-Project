@@ -1,0 +1,7 @@
+
+.factify__highlight {
+  background: rgba(255, 221, 0, 0.35);
+  border-bottom: 2px solid rgba(255, 180, 0, 0.9);
+  border-radius: 3px;
+  padding: 0 2px;
+}

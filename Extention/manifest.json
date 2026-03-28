@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Factify — Fake News Identifier",
+  "version": "0.1.1",
+  "description": "Select text on any page and check if it's fake or real.",
+  
+  "permissions": [
+    "activeTab"
+  ],
+
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
