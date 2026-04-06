@@ -10,7 +10,6 @@ export default function Result() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  const lang = state?.lang || "Nepali";
   const text = state?.text || "";
 
   const [result, setResult] = useState(null);
@@ -18,21 +17,20 @@ export default function Result() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    predict();
-  }, []);
-
-  const predict = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get("/Prediction?text=" + encodeURIComponent(text));
-      setResult(response.data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to analyze content. Please try again.");
-    } finally {
-      setLoading(false);
+    async function predict() {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get("/Prediction?text=" + encodeURIComponent(text));
+        setResult(response.data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to analyze content. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     }
-  };
+    predict();
+  }, [text]);
 
   // ── Loading state ──
   if (loading) {
@@ -63,7 +61,9 @@ export default function Result() {
   const confidencePct = Math.round(result.final_score * 100);
   const patternPct = Math.round(result.pattern_score * 100);
   const evidencePct = Math.round(result.evidence_score * 100);
-  const langLabel = result.language === "ne" ? "Nepali" : result.language === "en" ? "English" : result.language;
+
+  const langMap = { ne: "Nepali", en: "English" };
+  const langLabel = langMap[result.language] || state?.lang || result.language || "Unknown";
 
   const verdictColor = isFake
     ? { bg: "bg-rose-50", border: "border-rose-100", tag: "bg-rose-500", title: "text-rose-600", sub: "text-rose-700/80", ring: "#ef4444" }
@@ -141,17 +141,17 @@ export default function Result() {
                 <div className="mt-3 space-y-2">
                   <div className="flex justify-between text-xs font-medium text-slate-600">
                     <span>Real probability</span>
-                    <span className="text-emerald-600">{(result.pattern_probs.REAL * 100).toFixed(1)}%</span>
+                    <span className="text-emerald-600">{(result.pattern_probs.real * 100).toFixed(1)}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${result.pattern_probs.REAL * 100}%` }} />
+                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${result.pattern_probs.real * 100}%` }} />
                   </div>
                   <div className="flex justify-between text-xs font-medium text-slate-600 mt-2">
                     <span>Fake probability</span>
-                    <span className="text-rose-500">{(result.pattern_probs.FAKE * 100).toFixed(1)}%</span>
+                    <span className="text-rose-500">{(result.pattern_probs.fake * 100).toFixed(1)}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                    <div className="h-full bg-rose-500 rounded-full" style={{ width: `${result.pattern_probs.FAKE * 100}%` }} />
+                    <div className="h-full bg-rose-500 rounded-full" style={{ width: `${result.pattern_probs.fake * 100}%` }} />
                   </div>
                 </div>
               </div>
@@ -201,11 +201,11 @@ export default function Result() {
           </Link>
         </div>
 
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <button onClick={() => navigate(-1)} className="text-sm font-semibold text-slate-600 hover:text-slate-900 inline-flex items-center gap-2">
             <ArrowLeft size={16} /> Back
           </button>
-        </div>
+        </div> */}
       </section>
     </div>
   );

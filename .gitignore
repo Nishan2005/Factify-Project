@@ -13,6 +13,7 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 factify_xlmr_model/
+factify_english_model/
 
 # Model files
 *.pt
@@ -28,3 +29,17 @@ factify_xlmr_model/
 dist/
 build/
 
+# .NET
+bin/
+obj/
+
+# Python / ML
+*.ipynb
+*.pt
+*.bin
+*.dll
+*.exe
+*.pdb
+
+# Logs
+*.log

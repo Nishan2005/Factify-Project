@@ -11,6 +11,68 @@
   // =========================
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // =========================
+  // Token bridge (chrome.storage.local)
+  // =========================
+  // The JWT lives in the React app's localStorage (localhost origin).
+  // Content scripts on other pages cannot access it directly.
+  // The background service worker caches it in chrome.storage.local,
+  // accessible from any page.
+
+  function getToken() {
+    return new Promise((resolve) => {
+      try {
+        chrome.runtime.sendMessage({ type: "FACTIFY_GET_TOKEN" }, (res) => {
+          if (chrome.runtime.lastError) {
+            resolve(null);
+            return;
+          }
+          resolve(res && res.token ? res.token : null);
+        });
+      } catch {
+        resolve(null);
+      }
+    });
+  }
+
+  function syncTokenToBackground(token, refresh) {
+    try {
+      chrome.runtime.sendMessage({
+        type: token ? "FACTIFY_SET_TOKEN" : "FACTIFY_CLEAR_TOKEN",
+        token: token || null,
+        refresh: refresh || null,
+      });
+    } catch {
+      // extension context may not be available
+    }
+  }
+
+  // When running on the React app's origin, push the stored token (if any)
+  // to the background cache immediately, and keep it in sync on login/logout.
+  (function initTokenSync() {
+    // Only run the sync logic on the React app's origin (localhost).
+    if (window.location.hostname !== "localhost") return;
+
+    // Sync whatever is already in localStorage (handles "already logged in" case).
+    const existingToken = localStorage.getItem("accessToken");
+    const existingRefresh = localStorage.getItem("refreshToken");
+    syncTokenToBackground(existingToken, existingRefresh);
+
+    // React app dispatches this event after login/logout (see Navbar.jsx).
+    window.addEventListener("factify:tokenSync", (e) => {
+      const { token, refresh } = e.detail || {};
+      syncTokenToBackground(token || null, refresh || null);
+    });
+  })();
+
   function getSelectionText() {
     const sel = window.getSelection();
     if (!sel || sel.rangeCount === 0) return "";
@@ -266,6 +328,40 @@
         font-size: 11px;
       }
 
+      .source-box {
+        font-size: 11px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.07);
+        color: rgba(229,231,235,.85);
+        line-height: 1.45;
+      }
+      .source-box-label {
+        font-size: 10px;
+        color: rgba(229,231,235,.5);
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        margin-bottom: 4px;
+      }
+      .source-title {
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 2px;
+      }
+      .source-meta {
+        color: rgba(229,231,235,.6);
+        margin-bottom: 4px;
+      }
+      .source-link {
+        color: #60a5fa;
+        text-decoration: none;
+        font-size: 11px;
+      }
+      .source-link:hover { text-decoration: underline; }
+
       .link {
         color: rgba(229,231,235,.85);
         text-decoration: none;
@@ -346,6 +442,8 @@
             <div class="meter" aria-label="confidence meter">
               <div id="bar" class="bar"></div>
             </div>
+
+            <div id="sourceBox" class="source-box" style="display:none;"></div>
 
             <div class="actions">
               <div id="highlightBtn" class="btn">Highlight</div>
@@ -435,62 +533,56 @@
   }
 
   // =========================
-  // Fake analysis (replace with API)
+  // API call — uses the same .NET API as the React app
   // =========================
-//   async function getFakeNewsResult(selectedText) {
-//     // Replace this with:
-//     const res = await fetch("YOUR_API", {method:"POST", body: JSON.stringify({text:selectedText})...})
-//     return await res.json();
+  async function getFakeNewsResult(selectedText) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
 
-//     // demo: simple heuristic + random confidence
-//     const lower = selectedText.toLowerCase();
-//     const suspicious =
-//       /shocking|breaking|exposed|miracle|secret|cure|100%|guarantee/.test(
-//         lower,
-//       );
-//     const confidence = Math.round((suspicious ? 75 : 62) + Math.random() * 18); // 62–93
-//     return {
-//       label: suspicious ? "Likely Fake" : "Likely Real",
-//       confidence: clamp(confidence, 1, 99),
-//     };
-//   }
-async function getFakeNewsResult(selectedText) {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+      // Get the cached token from the background service worker.
+      // This works from any page, unlike reading localStorage directly.
+      const token = await getToken();
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
 
-    const res = await fetch("http://localhost:8000/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ text: selectedText }),
-      signal: controller.signal
-    });
+      const res = await fetch(
+        `https://localhost:7011/Prediction?text=${encodeURIComponent(selectedText)}`,
+        {
+          method: "GET",
+          headers,
+          signal: controller.signal,
+        }
+      );
 
-    clearTimeout(timeout);
+      clearTimeout(timeout);
 
-    if (!res.ok) {
-      throw new Error(`API error: ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      // Use the first evidence source if available
+      const topSource =
+        data.top_evidence && data.top_evidence.length > 0
+          ? data.top_evidence[0]
+          : null;
+
+      return {
+        label: data.verdict === "FAKE" ? "Likely Fake" : "Likely Real",
+        confidence: Math.round(data.final_score * 100),
+        source: topSource,
+      };
+    } catch (error) {
+      console.error("Factify API error:", error);
+      return {
+        label: "Connection Error",
+        confidence: 0,
+        source: null,
+      };
     }
-
-    const data = await res.json();
-
-    return {
-      label: data.label,
-      confidence: Math.round(data.confidence * 100),
-      probs: data.probs || {}
-    };
-
-  } catch (error) {
-    console.error("Factify API error:", error);
-    return {
-      label: "Connection Error",
-      confidence: 0,
-      probs: {}
-    };
   }
-}
   function renderResult(result) {
     predictionEl.textContent = result.label;
     confidenceTextEl.textContent = `${result.confidence}%`;
@@ -501,6 +593,30 @@ async function getFakeNewsResult(selectedText) {
       predictionEl.style.color = "#fca5a5"; // red-ish
     } else {
       predictionEl.style.color = "#86efac"; // green-ish
+    }
+
+    // Show top evidence source if available
+    const sourceBox = shadow.getElementById("sourceBox");
+    if (result.source) {
+      const similarityPct = Math.round(result.source.similarity * 100);
+      // Sanitize values before injecting into HTML
+      const safeTitle = escHtml(result.source.title || "");
+      const safeSource = escHtml(result.source.source || "");
+      const safeLink =
+        result.source.link && /^https:\/\//.test(result.source.link)
+          ? result.source.link
+          : null;
+      sourceBox.style.display = "block";
+      sourceBox.innerHTML =
+        `<div class="source-box-label">Top Source</div>` +
+        `<div class="source-title">${safeTitle}</div>` +
+        `<div class="source-meta">${safeSource} · ${similarityPct}% match</div>` +
+        (safeLink
+          ? `<a class="source-link" href="${escHtml(safeLink)}" target="_blank" rel="noopener noreferrer">View Source ↗</a>`
+          : "");
+    } else {
+      sourceBox.style.display = "none";
+      sourceBox.innerHTML = "";
     }
   }
 

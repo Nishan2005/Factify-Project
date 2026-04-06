@@ -10,7 +10,7 @@ export default function Home() {
     <div className="bg-white">
       {/* HERO (dark) */}
       <section className="bg-[#1e1a4d] text-white relative overflow-hidden pl-6">
-        <div className="container-ma*x py-16 md:py-20 grid md:grid-cols-2 gap-10 items-center">
+        <div className="container-max py-16 md:py-20 grid md:grid-cols-2 gap-10 items-center">
           <div>
             <div className="h-3 w-28 rounded-full bg-brand-700/70 mb-6" />
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">

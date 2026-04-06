@@ -4,11 +4,17 @@
   "version": "0.1.1",
   "description": "Select text on any page and check if it's fake or real.",
   
+  "background": {
+    "service_worker": "background.js"
+  },
+
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
 
   "host_permissions": [
+    "https://localhost:7011/*",
     "http://127.0.0.1:8000/*",
     "http://localhost:8000/*"
   ],

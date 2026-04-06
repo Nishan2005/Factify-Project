@@ -11,7 +11,6 @@ import About from "./pages/About.jsx";
 import Research from "./pages/Research.jsx";
 import Api from "./pages/Api.jsx";
 import NotFound from "./pages/NotFound.jsx";
-import Login from "./pages/Login.jsx";
 
 export default function App() {
   return (
@@ -19,15 +18,13 @@ export default function App() {
       <Route element={<AppShell />}>
         <Route path="/" element={<Home />} />
         <Route
-          path="/Verify"
+          path="/verify"
           element={
             <ProtectedRoute>
               <Verify />
             </ProtectedRoute>
           }
         />
-        {/* <Route path="/verify" element={<Verify />} /> */}
-                <Route path="/login" element={<Login />} />
         <Route path="/result" element={<Result />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about" element={<About />} />

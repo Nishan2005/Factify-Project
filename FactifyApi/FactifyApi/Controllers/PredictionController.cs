@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FactifyApi.Services;
+using FactifyApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
@@ -9,34 +11,17 @@ namespace FactifyApi.Controllers
     [Route("[controller]")]
     public class PredictionController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        public PredictionController(IConfiguration configuration)
+        private readonly INewsCheckService _newsCheckService;
+        public PredictionController(INewsCheckService newsCheckService)
         {
-            _configuration = configuration;
+            _newsCheckService = newsCheckService;
         }
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> CheckNews(string text)
         {
-            var url = _configuration["ExternalApis:RagApiUrl"];
-
-            var requestData = new
-            {
-                text = text
-            };
-
-            var json = JsonSerializer.Serialize(requestData);
-
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            using (HttpClient client = new HttpClient())
-            {
-                var response = await client.PostAsync(url, content);
-
-                var result = await response.Content.ReadAsStringAsync();
-
-                return Ok(result);
-            }
+            var result = await _newsCheckService.CheckNewsAsync(text);
+            return Ok(result);
         }
     }
 }

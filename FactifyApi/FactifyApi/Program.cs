@@ -1,4 +1,5 @@
 using FactifyApi.Data;
+using FactifyApi.Services;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddAuthorization();
-
+builder.Services.AddHttpClient<INewsCheckService, NewsCheckService>();
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<AuthDbContext>();
 builder.Services.Configure<BearerTokenOptions>(options =>

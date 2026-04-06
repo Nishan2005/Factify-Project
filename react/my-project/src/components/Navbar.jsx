@@ -6,6 +6,7 @@ import Badge from "./Badge.jsx";
 import clsx from "clsx";
 import logoimg from "../assets/Logo.png";
 import axiosInstance from "../api/axiosInstance";
+import { useAuth } from "../hooks/useAuth";
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -14,11 +15,13 @@ const navItems = [
   { to: "/research", label: "Research" },
 ];
 
-export default function Navbar({ dark }) {
+export default function Navbar() {
   const { pathname } = useLocation();
   const isVerify = pathname === "/verify" || pathname === "/result";
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { token, login, logout } = useAuth();
+  const isLoggedIn = !!token;
+
   const [showModal, setShowModal] = useState(false);
   const [tab, setTab] = useState("login");
 
@@ -29,22 +32,32 @@ export default function Navbar({ dark }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("accessToken"));
-  }, []);
-
   const openModal = (t = "login") => {
     setTab(t); setMessage("");
     setEmail(""); setPassword(""); setName(""); setConfirmPassword("");
     setShowModal(true);
   };
 
+  useEffect(() => {
+    const handler = () => {
+      setTab("login");
+      setMessage("");
+      setEmail("");
+      setPassword("");
+      setName("");
+      setConfirmPassword("");
+      setShowModal(true);
+    };
+    window.addEventListener("factify:openLoginModal", handler);
+    return () => window.removeEventListener("factify:openLoginModal", handler);
+  }, []);
+
   const closeModal = () => setShowModal(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setIsLoggedIn(false);
+    logout();
+    // Notify the Factify extension content script to clear the cached token.
+    window.dispatchEvent(new CustomEvent("factify:tokenSync", { detail: { token: null, refresh: null } }));
   };
 
   const handleLogin = async (e) => {
@@ -52,9 +65,9 @@ export default function Navbar({ dark }) {
     setLoading(true); setMessage("");
     try {
       const { data } = await axiosInstance.post("/login", { email, password });
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      setIsLoggedIn(true);
+      login(data);
+      // Notify the Factify extension content script to cache the new token.
+      window.dispatchEvent(new CustomEvent("factify:tokenSync", { detail: { token: data.accessToken, refresh: data.refreshToken } }));
       closeModal();
     } catch {
       setMessage("Invalid email or password.");
@@ -69,9 +82,9 @@ export default function Navbar({ dark }) {
     setLoading(true); setMessage("");
     try {
       const { data } = await axiosInstance.post("/register", { email, password });
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      setIsLoggedIn(true);
+      login(data);
+      // Notify the Factify extension content script to cache the new token.
+      window.dispatchEvent(new CustomEvent("factify:tokenSync", { detail: { token: data.accessToken, refresh: data.refreshToken } }));
       closeModal();
     } catch {
       setMessage("Sign up failed. Please try again.");
