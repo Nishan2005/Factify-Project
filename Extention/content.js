@@ -1,14 +1,4 @@
 (() => {
-  // =========================
-  // Config
-  // =========================
-  const EXT_NAMESPACE = "factify";
-  const MAX_TEXT = 600; // keep selected text short for demo
-  const ICON_SIZE = 34;
-
-  // =========================
-  // Utilities
-  // =========================
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
   function escHtml(str) {
