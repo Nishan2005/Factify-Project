@@ -2,8 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
-import { ShieldCheck, Languages, Zap } from "lucide-react";
+import { ShieldCheck, Languages, Zap, PuzzleIcon, Download } from "lucide-react";
 import HeroImg from "../images/27075.jpg";
+
+const EXTENSION_ZIP_PATH = "/factify-extension.zip";
 
 export default function Home() {
   return (
@@ -23,7 +25,7 @@ export default function Home() {
 
             <div className="mt-8 flex gap-3">
               <Link to="/verify"><Button variant="primary">Check News Now</Button></Link>
-              <a href="#how" className="hidden sm:block">
+              <a href="#browser-extension" className="hidden sm:block">
                 <Button variant="outline">Learn More</Button>
               </a>
             </div>
@@ -83,28 +85,151 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works (dark band like screenshot) */}
-      <section id="how" className="bg-[#1e1a4d] text-white/90 pl-6 py-16">
-        <div className="container-max">
-          <h3 className="text-center text-xl font-semibold opacity-80">How Factify AI Works</h3>
-          <div className="mt-10 grid md:grid-cols-3 gap-6 text-center">
-            <Step num="1" title="Submit Content" desc="Paste a URL or text snippet in English or Nepali into our analyzer." />
-            <Step num="2" title="AI Analysis" desc="Our transformer models cross-reference claims and analyze patterns." />
-            <Step num="3" title="Get Results" desc="Receive an instant credibility score and explanation." />
+      {/* Browser extension */}
+       <section
+      style={{
+        background: "#1e1a4d",
+        padding: "4rem 1.5rem",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "900px",
+          margin: "0 auto",
+          background: "rgba(255,255,255,0.07)",
+          border: "0.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px",
+          padding: "2.5rem",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            gap: "2rem",
+            alignItems: "center",
+          }}
+        >
+          {/* Left: text */}
+          <div>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                borderRadius: "999px",
+                background: "rgba(167,139,250,0.18)",
+                border: "0.5px solid rgba(167,139,250,0.35)",
+                padding: "4px 12px",
+                marginBottom: "1.25rem",
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#a78bfa"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+              </svg>
+              <span
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "#c4b5fd",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Browser Extension
+              </span>
+            </div>
+
+            <h3
+              style={{
+                margin: "0 0 0.75rem",
+                fontSize: "clamp(1.4rem, 3vw, 1.9rem)",
+                fontWeight: 800,
+                color: "#ffffff",
+                lineHeight: 1.2,
+              }}
+            >
+              Download Factify for your browser
+            </h3>
+            <p
+              style={{
+                margin: 0,
+                fontSize: "15px",
+                color: "rgba(255,255,255,0.6)",
+                maxWidth: "520px",
+                lineHeight: 1.6,
+              }}
+            >
+              Verify news while you browse. Install the extension and check
+              claims directly from any webpage in seconds.
+            </p>
           </div>
 
-          <div className="mt-14 rounded-3xl bg-brand-700 px-8 py-12 text-center shadow-soft">
-            <h4 className="text-3xl md:text-4xl font-extrabold text-white">Ready to verify some news?</h4>
-            <p className="mt-3 text-white/80">
-              Join thousands of users who trust Factify AI to navigate the digital news landscape safely.
-            </p>
-            <div className="mt-7 flex justify-center gap-3">
-              <Link to="/verify"><Button variant="light">Get Started Free</Button></Link>
-              <Link to="/research"><Button className="bg-white/10 text-white border border-white/20 hover:bg-white/15">View Case Studies</Button></Link>
-            </div>
+          {/* Right: buttons */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              alignItems: "flex-start",
+            }}
+          >
+            <a href={EXTENSION_ZIP_PATH} download="factify-extension.zip">
+              <button
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 20px",
+                  borderRadius: "8px",
+                  background: "#7c3aed",
+                  border: "none",
+                  color: "#ffffff",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <Download size={15} />
+                Download
+              </button>
+            </a>
+
+            <Link to="/extension">
+              <button
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 20px",
+                  borderRadius: "8px",
+                  background: "transparent",
+                  border: "0.5px solid rgba(255,255,255,0.25)",
+                  color: "rgba(255,255,255,0.75)",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Installation Guide
+              </button>
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
     </div>
   );
 }
@@ -118,17 +243,5 @@ function Feature({ icon, title, desc }) {
       <h4 className="mt-4 font-bold">{title}</h4>
       <p className="mt-2 text-sm text-slate-600">{desc}</p>
     </Card>
-  );
-}
-
-function Step({ num, title, desc }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-      <div className="mx-auto h-12 w-12 rounded-full bg-white grid place-items-center text-brand-800 font-extrabold">
-        {num}
-      </div>
-      <h5 className="mt-4 font-bold text-white">{title}</h5>
-      <p className="mt-2 text-sm text-white/70">{desc}</p>
-    </div>
   );
 }

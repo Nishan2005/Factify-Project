@@ -4,6 +4,8 @@ namespace FactifyApi.ViewModels
 {
     public class FakeNewsResultViewModel
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
         [JsonPropertyName("pattern_label")]
         public string Pattern_Label { get; set; }
 

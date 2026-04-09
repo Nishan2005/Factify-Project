@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddHttpClient<INewsCheckService, NewsCheckService>();
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddRoles<IdentityRole>()   
     .AddEntityFrameworkStores<AuthDbContext>();
 builder.Services.Configure<BearerTokenOptions>(options =>
 {
@@ -35,9 +36,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.Initialize(services);
+}
 app.UseCors("AllowReactApp");
 
 app.MapIdentityApi<IdentityUser>();

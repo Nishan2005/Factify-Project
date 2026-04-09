@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import Card from "../components/Card.jsx";
 import Button from "../components/Button.jsx";
 import ConfidenceRing from "../components/ConfidenceRing.jsx";
-import { AlertTriangle, CheckCircle, Globe, Flag, Link2, ArrowLeft, ExternalLink, Search } from "lucide-react";
+import { AlertTriangle, CheckCircle, Globe, Flag, Link2, ArrowLeft, ExternalLink, Search, ThumbsUp, ThumbsDown, Send  } from "lucide-react";
 import axiosInstance from "../api/axiosInstance";
 
 export default function Result() {
@@ -192,7 +192,7 @@ export default function Result() {
             </div>
           </div>
         </Card>
-
+<FeedbackSection result={result} />
         {/* Bottom note */}
         <div className="mt-10 text-center text-xs text-slate-500">
           Factify AI uses a combination of LLMs and custom knowledge graphs. Always exercise critical judgment.{" "}
@@ -271,6 +271,129 @@ function EvidenceCard({ evidence }) {
           View Source <ExternalLink size={11} />
         </a>
       </div>
+    </div>
+  );
+}
+// ── Paste this component at the bottom of Result.jsx ──
+
+function FeedbackSection({ result }) {
+  const [vote, setVote] = useState(null);        // 'yes' | 'no' | null
+  const [activeTags, setActiveTags] = useState([]);
+  const [comment, setComment] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const ISSUE_TAGS = ["Wrong verdict", "Scores seem off", "Bad evidence sources", "Missing context", "Other"];
+
+  function toggleTag(tag) {
+    setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+  }
+
+  async function handleSubmit() {
+  try {
+    await axiosInstance.post("/Feedback", {
+      id: result.id,
+      vote,
+      tags: activeTags,
+      comment,
+    });
+  } catch (err) {
+    console.error("Failed to submit feedback:", err);
+  } finally {
+    setSubmitted(true);
+  }
+}
+  if (submitted) {
+    return (
+      <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 flex items-center gap-3">
+        <CheckCircle size={18} className="text-emerald-600 flex-shrink-0" />
+        <p className="text-sm font-semibold text-emerald-700">
+          Thanks for your feedback — it helps us improve Factify.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5">
+      <p className="text-sm font-semibold text-slate-700 mb-3">Was this analysis helpful?</p>
+
+      {/* Thumbs row */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <button
+          type="button"
+          onClick={() => setVote("yes")}
+          className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition
+            ${vote === "yes"
+              ? "bg-emerald-50 border-emerald-400 text-emerald-700"
+              : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}
+        >
+          <ThumbsUp size={15} />
+          Yes, looks accurate
+        </button>
+        <button
+          type="button"
+          onClick={() => setVote("no")}
+          className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition
+            ${vote === "no"
+              ? "bg-rose-50 border-rose-400 text-rose-700"
+              : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}
+        >
+          <ThumbsDown size={15} />
+          No, something's off
+        </button>
+      </div>
+
+      {/* Issue tags — only for negative vote */}
+      {vote === "no" && (
+        <div className="mt-4">
+          <p className="text-xs font-semibold text-slate-500 mb-2">What was the issue?</p>
+          <div className="flex flex-wrap gap-2">
+            {ISSUE_TAGS.map(tag => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => toggleTag(tag)}
+                className={`rounded-full border px-3 py-1 text-xs font-semibold transition
+                  ${activeTags.includes(tag)
+                    ? "bg-rose-50 border-rose-400 text-rose-700"
+                    : "border-slate-200 text-slate-500 hover:bg-slate-50"}`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Comment box — shown after any vote */}
+      {vote && (
+        <div className="mt-4">
+          <p className="text-xs font-semibold text-slate-500 mb-2">
+            Anything else to add?{" "}
+            <span className="font-normal text-slate-400">(optional)</span>
+          </p>
+          <textarea
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700
+                       placeholder-slate-400 resize-none focus:outline-none focus:border-brand-400 min-h-[80px]"
+            maxLength={300}
+            placeholder="Tell us what you think…"
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+          <div className="flex items-center justify-between mt-1">
+            <span className="text-xs text-slate-400">{comment.length} / 300</span>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white
+                         px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+            >
+              <Send size={13} />
+              Submit feedback
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -33,6 +33,22 @@
     "EndpointName": "MapIdentityApi-/confirmEmail"
   },
   {
+    "ContainingType": "FactifyApi.Controllers.FeedbackController",
+    "Method": "SubmitFeedback",
+    "RelativePath": "Feedback",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "FactifyApi.ViewModels.FeedbackViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Microsoft.AspNetCore.Routing.IdentityApiEndpointRouteBuilderExtensions\u002B\u003C\u003Ec__DisplayClass1_0\u00601[[Microsoft.AspNetCore.Identity.IdentityUser, Microsoft.Extensions.Identity.Stores, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
     "Method": "\u003CMapIdentityApi\u003Eb__6",
     "RelativePath": "forgotPassword",
