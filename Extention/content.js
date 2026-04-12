@@ -1,4 +1,14 @@
 (() => {
+  // =========================
+  // Config
+  // =========================
+  const EXT_NAMESPACE = "factify";
+  const MAX_TEXT = 600; // keep selected text short for demo
+  const ICON_SIZE = 34;
+
+  // =========================
+  // Utilities
+  // =========================
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
   function escHtml(str) {
@@ -326,6 +336,8 @@
         border: 1px solid rgba(255,255,255,.07);
         color: rgba(229,231,235,.85);
         line-height: 1.45;
+        overflow: hidden;
+        min-width: 0;
       }
       .source-box-label {
         font-size: 10px;
@@ -336,14 +348,19 @@
       }
       .source-title {
         font-weight: 700;
-        white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-word;
         margin-bottom: 2px;
       }
       .source-meta {
         color: rgba(229,231,235,.6);
         margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .source-link {
         color: #60a5fa;

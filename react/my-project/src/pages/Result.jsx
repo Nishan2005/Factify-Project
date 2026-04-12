@@ -57,10 +57,17 @@ export default function Result() {
   if (!result) return null;
 
   // ── Derived display values from API response ──
+  const toPercent = (score) => {
+    const num = Number(score);
+    if (!Number.isFinite(num)) return 0;
+    const normalized = num >= 0 && num <= 1 ? num * 100 : num;
+    return Math.round(Math.max(0, Math.min(100, normalized)));
+  };
+
   const isFake = result.verdict === "FAKE";
-  const confidencePct = Math.round(result.final_score * 100);
-  const patternPct = Math.round(result.pattern_score * 100);
-  const evidencePct = Math.round(result.evidence_score * 100);
+  const confidencePct = toPercent(result.final_score);
+  const patternPct = toPercent(result.pattern_score);
+  const evidencePct = toPercent(result.evidence_score);
 
   const langMap = { ne: "Nepali", en: "English" };
   const langLabel = langMap[result.language] || state?.lang || result.language || "Unknown";
@@ -107,7 +114,7 @@ export default function Result() {
 
               <div className="w-full max-w-xs space-y-3">
                 <ScoreBar label="Final Confidence" value={confidencePct} color={isFake ? "bg-rose-500" : "bg-emerald-500"} />
-                <ScoreBar label="Pattern Score" value={patternPct} color="bg-brand-700" />
+                <ScoreBar label="Pattern Score" value={patternPct} color="bg-indigo-600" />
                 <ScoreBar label="Evidence Match" value={evidencePct} color="bg-blue-500" />
               </div>
 

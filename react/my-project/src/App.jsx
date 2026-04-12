@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import AppShell from "./components/AppShell.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import AdminRoute from "./routes/AdminRoute.jsx";
 
 import Home from "./pages/Home.jsx";
 import Verify from "./pages/Verify.jsx";
@@ -10,6 +11,7 @@ import HowItWorks from "./pages/HowItWorks.jsx";
 import About from "./pages/About.jsx";
 import Research from "./pages/Research.jsx";
 import Api from "./pages/Api.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -30,6 +32,16 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/research" element={<Research />} />
         <Route path="/api" element={<Api />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>

@@ -1,5 +1,35 @@
 [
   {
+    "ContainingType": "FactifyApi.Controllers.AdminController",
+    "Method": "CheckAccess",
+    "RelativePath": "admin/access",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FactifyApi.Controllers.AdminController",
+    "Method": "GetDashboard",
+    "RelativePath": "admin/dashboard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FactifyApi.Controllers.AdminController",
+    "Method": "ExportPredictions",
+    "RelativePath": "admin/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Microsoft.AspNetCore.Routing.IdentityApiEndpointRouteBuilderExtensions\u002B\u003C\u003Ec__1\u00601[[Microsoft.AspNetCore.Identity.IdentityUser, Microsoft.Extensions.Identity.Stores, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
     "Method": "\u003CMapIdentityApi\u003Eb__1_3",
     "RelativePath": "confirmEmail",

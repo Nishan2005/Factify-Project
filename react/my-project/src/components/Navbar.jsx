@@ -21,6 +21,7 @@ export default function Navbar() {
 
   const { token, login, logout } = useAuth();
   const isLoggedIn = !!token;
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
   const [tab, setTab] = useState("login");
@@ -51,6 +52,30 @@ export default function Navbar() {
     window.addEventListener("factify:openLoginModal", handler);
     return () => window.removeEventListener("factify:openLoginModal", handler);
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const validateAdmin = async () => {
+      if (!token) {
+        if (mounted) setIsAdmin(false);
+        return;
+      }
+
+      try {
+        await axiosInstance.get("/admin/access");
+        if (mounted) setIsAdmin(true);
+      } catch {
+        if (mounted) setIsAdmin(false);
+      }
+    };
+
+    validateAdmin();
+
+    return () => {
+      mounted = false;
+    };
+  }, [token]);
 
   const closeModal = () => setShowModal(false);
 
@@ -129,6 +154,15 @@ export default function Navbar() {
 
             {isLoggedIn ? (
               <>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <button
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm border border-white/15 bg-white/5 hover:bg-white/10 transition"
+                    >
+                      <span className="font-medium hidden sm:inline">Admin</span>
+                    </button>
+                  </Link>
+                )}
                 <Link to="/verify"><Button variant="primary">Check News Now</Button></Link>
                 <button onClick={handleLogout}
                   className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm border border-white/15 bg-white/5 hover:bg-white/10 transition"
