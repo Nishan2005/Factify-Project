@@ -130,7 +130,7 @@ export default function Home() {
                 height="14"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#a78bfa"
+                stroke="#ffffff"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -142,7 +142,7 @@ export default function Home() {
                 style={{
                   fontSize: "12px",
                   fontWeight: 600,
-                  color: "#c4b5fd",
+                  color: "#b5c1fd",
                   letterSpacing: "0.02em",
                 }}
               >
@@ -192,7 +192,7 @@ export default function Home() {
                   gap: "8px",
                   padding: "10px 20px",
                   borderRadius: "8px",
-                  background: "#7c3aed",
+                  background: "#1212de",
                   border: "none",
                   color: "#ffffff",
                   fontSize: "14px",
@@ -200,6 +200,8 @@ export default function Home() {
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                 }}
+                variant="primary"
+                
               >
                 <Download size={15} />
                 Download

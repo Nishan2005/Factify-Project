@@ -6,26 +6,12 @@ import { ShieldCheck, Users, Globe, Lightbulb, Target, BookOpen } from "lucide-r
 
 const team = [
   {
-    name: "Nishan Subedi",
+    name: "Nishan Maharjna",
     role: "Lead Developer & ML Engineer",
     bio: "Built the NLP pipeline and transformer-based classification models for bilingual fake news detection.",
     initials: "NS",
     color: "bg-blue-600",
-  },
-  {
-    name: "Research Team",
-    role: "Linguistics & Data Science",
-    bio: "Curated the Nepali-English misinformation dataset and conducted cross-lingual evaluation benchmarks.",
-    initials: "RT",
-    color: "bg-indigo-600",
-  },
-  {
-    name: "Open Source Community",
-    role: "Contributors",
-    bio: "Developers and fact-checkers who improved model accuracy and expanded language coverage.",
-    initials: "OS",
-    color: "bg-violet-600",
-  },
+  }
 ];
 
 const values = [

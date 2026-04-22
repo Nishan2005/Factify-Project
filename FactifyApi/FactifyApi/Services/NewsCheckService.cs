@@ -51,6 +51,13 @@ namespace FactifyApi.Services
                 {
                     PropertyNameCaseInsensitive = true
                 });
+            if(result.Top_Evidence.Count > 0)
+            {if (result.Verdict == "FAKE" && (result.Top_Evidence[0].Similarity * 100) > 60)
+                {
+                    result.Verdict = "REAL";
+                    result.Pattern_Label = "REAL";
+                }
+            }
             List<Entities.TopEvidence> evediences = new List<Entities.TopEvidence>();
             if (result.Top_Evidence.Count > 0)
             {

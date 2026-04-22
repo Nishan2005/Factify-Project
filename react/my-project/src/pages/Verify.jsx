@@ -15,10 +15,32 @@ export default function Verify() {
       : "Paste the news article, headline, or social media post content you want to verify here…";
   }, [lang]);
 
+  const [error, setError] = useState("");
+
   function onVerify() {
-    // frontend-only: simulate analysis
-    navigate("/result", { state: { text, lang } });
+    const trimmed = text.trim();
+    const words = trimmed.split(/\s+/).filter((w) => w.length > 1);
+
+  if (!trimmed) {
+    setError("Please paste some content before verifying.");
+    return;
   }
+  if (trimmed.length < 20) {
+    setError("Content is too short. Please paste a full sentence or article headline.");
+    return;
+  }
+  if (words.length < 3) {
+    setError("Content doesn't seem meaningful. Please paste a complete sentence or news headline.");
+    return;
+  }
+  if (/^[^a-zA-Z\u0900-\u097F]+$/.test(trimmed)) {
+    setError("Content appears to contain only numbers or symbols. Please paste actual text.");
+    return;
+  }
+
+  setError("");
+  navigate("/result", { state: { text, lang } });
+}
 
   async function onPaste() {
     try {
@@ -81,11 +103,22 @@ export default function Verify() {
 
           <div className="p-6 bg-white">
             <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder={placeholder}
-              className="w-full min-h-[300px] md:min-h-[360px] rounded-2xl border border-slate-200 p-4 text-sm outline-none focus:ring-2 focus:ring-brand-200"
-            />
+  value={text}
+  onChange={(e) => { setText(e.target.value); setError(""); }}
+  placeholder={placeholder}
+  className={`w-full min-h-[300px] md:min-h-[360px] rounded-2xl border p-4 text-sm outline-none focus:ring-2 focus:ring-brand-200 ${
+    error ? "border-red-400 focus:ring-red-200" : "border-slate-200"
+  }`}
+/>
+
+{error && (
+  <div className="mt-2 flex items-start gap-2 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
+    <span className="text-red-500 mt-0.5">
+      <ShieldCheck size={16} />
+    </span>
+    <p className="text-sm text-red-700">{error}</p>
+  </div>
+)}
             <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <div className="flex items-start gap-2 text-sm">
                 <ShieldCheck className="text-emerald-600 mt-0.5" size={18} />

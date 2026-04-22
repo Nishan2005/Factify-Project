@@ -17,9 +17,9 @@ export default function HowItWorks() {
             </p>
           </div>
           <div className="hidden md:block">
-<Button className="bg-gray-900 text-white hover:bg-gray-800 px-6 py-2 rounded-lg shadow-md">
+{/* <Button className="bg-gray-900 text-white hover:bg-gray-800 px-6 py-2 rounded-lg shadow-md">
   Research Paper
-</Button>
+</Button> */}
           </div>
         </div>
 

@@ -20,8 +20,15 @@ namespace FactifyApi.Controllers
         [Authorize]
         public async Task<IActionResult> CheckNews(string text)
         {
-            var result = await _newsCheckService.CheckNewsAsync(text);
-            return Ok(result);
+            try
+            {
+                var result = await _newsCheckService.CheckNewsAsync(text);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

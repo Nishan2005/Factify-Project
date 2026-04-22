@@ -65,6 +65,7 @@ export default function Result() {
   };
 
   const isFake = result.verdict === "FAKE";
+  const isUncertain = result.verdict === "UNCERTAIN";
   const confidencePct = toPercent(result.final_score);
   const patternPct = toPercent(result.pattern_score);
   const evidencePct = toPercent(result.evidence_score);
@@ -74,28 +75,29 @@ export default function Result() {
 
   const verdictColor = isFake
     ? { bg: "bg-rose-50", border: "border-rose-100", tag: "bg-rose-500", title: "text-rose-600", sub: "text-rose-700/80", ring: "#ef4444" }
+    : isUncertain ? { bg: "bg-amber-50", border: "border-amber-100", tag: "bg-amber-500", title: "text-amber-600", sub: "text-amber-700/80", ring: "#f59e0b" }
     : { bg: "bg-emerald-50", border: "border-emerald-100", tag: "bg-emerald-500", title: "text-emerald-600", sub: "text-emerald-700/80", ring: "#10b981" };
 
-  const verdictLabel = isFake ? "HIGHLY LIKELY FAKE" : "LIKELY REAL";
-  const verdictTag = isFake ? "VERDICT: FAKE" : "VERDICT: REAL";
+  const verdictLabel = isFake ? "HIGHLY LIKELY FAKE" : isUncertain ? "POSSIBLY FAKE" : "LIKELY REAL";
+  const verdictTag = isFake ? "VERDICT: FAKE" : isUncertain ? "VERDICT: UNCERTAIN" : "VERDICT: REAL";
   const verdictSubtitle = isFake
     ? "This content shows multiple markers of misinformation."
     : "This content appears to be credible and evidence-backed.";
 
   return (
     <div className="bg-slate-50">
-      <section className="container-max py-8 md:py-10">
+      <section className="container-max">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-slate-500">
+        {/* <div className="flex items-center gap-2 text-sm text-slate-500">
           <span className="inline-flex items-center gap-2">
             <span className="text-brand-700">⌂</span> Home
           </span>
           <span>/</span>
           <span>Analysis Result</span>
-        </div>
+        </div> */}
 
         {/* Main result card */}
-        <Card className="mt-4 overflow-hidden">
+        <Card className=" overflow-hidden">
           {/* Verdict header */}
           <div className={`${verdictColor.bg} border-b ${verdictColor.border} px-6 py-6 text-center`}>
             <div className={`inline-flex items-center rounded-full ${verdictColor.tag} text-white text-xs font-bold px-3 py-1`}>
@@ -186,13 +188,13 @@ export default function Result() {
               Analyzed just now • Language: {langLabel}
             </div>
             <div className="flex gap-3">
-              <button
+              {/* <button
                 className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50"
                 type="button"
               >
                 <Link2 className="inline mr-2" size={16} />
                 Report a Correction
-              </button>
+              </button> */}
               <Button variant="primary" onClick={() => navigate("/verify")}>
                 Check New Text
               </Button>

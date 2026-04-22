@@ -13,6 +13,7 @@ import Research from "./pages/Research.jsx";
 import Api from "./pages/Api.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import Extension from "./pages/Extension.jsx";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/research" element={<Research />} />
         <Route path="/api" element={<Api />} />
+        <Route path="/extension" element={<Extension />} />
         <Route
           path="/admin"
           element={

@@ -29,7 +29,7 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<AuthDbContext>();
 builder.Services.Configure<BearerTokenOptions>(options =>
 {
-    options.BearerTokenExpiration = TimeSpan.FromMinutes(1);
+    options.BearerTokenExpiration = TimeSpan.FromMinutes(30);
     options.RefreshTokenExpiration = TimeSpan.FromDays(7);
 });
 builder.Services.AddControllers();
