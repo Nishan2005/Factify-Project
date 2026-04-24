@@ -1,16 +1,3 @@
-"""
-Factify – RAG-Enhanced Fake News Detection API  (v3 – Bilingual)
-=================================================================
-Supports both Nepali (Devanagari) and English news detection.
-Language is detected automatically — no change needed on the frontend.
-
-Endpoints:
-  POST /predict          → Layer 1 only  (pattern classifier, fast)
-  POST /predict/rag      → Layer 1 + 2   (classifier + live evidence retrieval)
-  POST /index/refresh    → Re-fetch RSS feeds and rebuild FAISS index
-  GET  /health           → Status + index stats + loaded models
-"""
-
 import os
 os.environ['USE_TF'] = '0'
 os.environ['TRANSFORMERS_NO_TF'] = '1'

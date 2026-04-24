@@ -48,7 +48,6 @@ app.UseCors("AllowReactApp");
 
 app.MapIdentityApi<IdentityUser>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

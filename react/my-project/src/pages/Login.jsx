@@ -19,7 +19,7 @@ export default function Login() {
 
     try {
       const response = await axiosInstance.post(
-        "/login", // change to your API
+        "/login", 
         {
           email: email,
           password: password

@@ -6,9 +6,6 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
-# -----------------------------
-# CONFIG: add your trusted RSS feeds here
-# -----------------------------
 TRUSTED_RSS_FEEDS = [
     "https://kathmandupost.com/rss",
     "https://www.onlinekhabar.com/feed",
@@ -54,7 +51,6 @@ def fetch_article_text(url: str) -> str:
         paragraphs = [p.get_text(" ", strip=True) for p in soup.find_all("p")]
         text = clean_text(" ".join(paragraphs))
 
-        # Filter too-short pages
         if len(text) < 200:
             return ""
         return text

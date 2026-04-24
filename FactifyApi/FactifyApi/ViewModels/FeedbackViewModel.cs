@@ -5,7 +5,7 @@ namespace FactifyApi.ViewModels
     public class FeedbackViewModel
     {
         [Required]
-        public int Id { get; set; }                    // maps to PredictionId
+        public int Id { get; set; }                    
 
         [Required]
         [RegularExpression("yes|no", ErrorMessage = "Vote must be 'yes' or 'no'")]

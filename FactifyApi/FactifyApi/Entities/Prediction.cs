@@ -26,13 +26,11 @@ namespace FactifyApi.Entities
         [MaxLength(50)]
         public string Verdict { get; set; } = string.Empty;
 
-        // For pattern_probs
         public double RealProbability { get; set; }
 
         public double FakeProbability { get; set; }
         public Guid UserId { get; set; }
 
-        // Navigation property
         public ICollection<TopEvidence> TopEvidences { get; set; } = new List<TopEvidence>();
     }
 

@@ -2,7 +2,7 @@ import re
 import pandas as pd
 from urllib.parse import urlparse
 
-IN_CSV = "real_rss.csv"     # your file
+IN_CSV = "real_rss.csv"     
 OUT_CSV = "factcheck_labeled.csv"
 
 FAKE_PAT = re.compile(r"(मिथ्या|भ्रामक|गलत|झुटो|झूठो|फेक|हल्ला)", re.IGNORECASE)
@@ -24,7 +24,6 @@ def weak_label(heading: str, subheading: str):
     has_fake = bool(FAKE_PAT.search(txt))
     has_real = bool(REAL_PAT.search(txt))
 
-    # For your current pipeline: map misleading -> FAKE
     if has_fake:
         return "FAKE"
     if has_real and not has_fake:

@@ -20,7 +20,6 @@ namespace FactifyApi.Entities
 
         public string? Snippet { get; set; }
 
-        // Foreign key
         public int PredictionId { get; set; }
 
         [ForeignKey(nameof(PredictionId))]

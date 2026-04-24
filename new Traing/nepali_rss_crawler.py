@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-"""
-Nepali RSS crawler that exports CSV in this format:
-
-news_content,label,category,source_type,news_id,generated_date,meta_intent,meta_style
-
-Usage:
-    python nepali_rss_crawler.py
-
-Optional:
-    python nepali_rss_crawler.py --limit 50 --output nepali_news_dataset.csv
-"""
-
 import argparse
 import csv
 import re

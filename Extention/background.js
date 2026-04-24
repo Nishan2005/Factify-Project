@@ -1,11 +1,5 @@
-// background.js — Manifest V3 service worker
-// Acts as a shared token store so the content script can access the Factify
-// JWT from any page, not just the React app's own origin.
-
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg.type === "FACTIFY_SET_TOKEN") {
-    // Store/update the access token (and optional refresh token) received
-    // from the content script running on the React app's origin.
     chrome.storage.local.set(
       {
         factify_token: msg.token || null,

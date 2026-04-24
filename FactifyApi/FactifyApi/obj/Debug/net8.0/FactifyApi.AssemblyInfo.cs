@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FactifyApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ecbbe0391cc281a4fb788bd35bc2af55f06d9470")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f7f0d5300669f2145bf1060a984cdea26559f03")]
 [assembly: System.Reflection.AssemblyProductAttribute("FactifyApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FactifyApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

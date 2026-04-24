@@ -8,6 +8,7 @@ using System.Text.Json;
 namespace FactifyApi.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class PredictionController : ControllerBase
     {
@@ -17,7 +18,6 @@ namespace FactifyApi.Controllers
             _newsCheckService = newsCheckService;
         }
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> CheckNews(string text)
         {
             try

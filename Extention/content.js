@@ -19,14 +19,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  // =========================
-  // Token bridge (chrome.storage.local)
-  // =========================
-  // The JWT lives in the React app's localStorage (localhost origin).
-  // Content scripts on other pages cannot access it directly.
-  // The background service worker caches it in chrome.storage.local,
-  // accessible from any page.
-
   function getToken() {
     return new Promise((resolve) => {
       try {
@@ -51,14 +43,10 @@
         refresh: refresh || null,
       });
     } catch {
-      // extension context may not be available
     }
   }
 
-  // When running on the React app's origin, push the stored token (if any)
-  // to the background cache immediately, and keep it in sync on login/logout.
   (function initTokenSync() {
-    // Only run the sync logic on the React app's origin (localhost).
     if (window.location.hostname !== "localhost") return;
 
     // Sync whatever is already in localStorage (handles "already logged in" case).
@@ -654,16 +642,12 @@
     const range = sel.getRangeAt(0);
     if (range.collapsed) return;
 
-    // Important: This is a basic approach and may fail on complex pages.
-    // For production, use a robust highlighter library or carefully handle DOM splits.
     const span = document.createElement("span");
     span.className = "factify__highlight";
     try {
       range.surroundContents(span);
       sel.removeAllRanges();
     } catch (e) {
-      // If surroundContents fails (partial node selection), fallback:
-      // just do nothing instead of breaking the page.
       console.warn("Highlight failed (complex selection).", e);
     }
   }
@@ -687,7 +671,6 @@
     lastSelectionText = text;
     lastSelectionRange = window.getSelection().getRangeAt(0);
 
-    // Show fab near selection; hide popover until user hovers/clicks
     positionFabNearSelection();
     hideNode(popoverNode);
   }
@@ -713,7 +696,7 @@
   fab.addEventListener("mouseenter", () => {
     hoveringFab = true;
     openPopover();
-    analyzeSelection(); // auto-run on hover like Sladict
+    analyzeSelection(); // auto-run on hover 
   });
   fab.addEventListener("mouseleave", () => {
     hoveringFab = false;
